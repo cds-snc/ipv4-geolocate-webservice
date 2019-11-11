@@ -16,7 +16,11 @@ jobs:
         args: auth configure-docker --quiet
     - name: Build the Docker image
       uses: docker://docker:stable
-      run: make build
+      with:
+        entrypoint: sh
+        args: -c "make build"
     - name: Push
       uses: docker://docker:stable
-      run: make push
+      with:
+        entrypoint: sh
+        args: -c "make push"
