@@ -12,5 +12,5 @@ jobs:
         GCLOUD_AUTH: ${{ secrets.GCLOUD_AUTH }}
     - name: Build the Docker image
       run: make build
-    # - name: Push
-    #  run: make push
+    - name: Push
+      run: make push
