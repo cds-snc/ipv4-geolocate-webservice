@@ -1,5 +1,7 @@
 name: Build and deploy
-on: push
+on:
+  schedule:
+    - cron:  '0 12 * * 3'
 jobs:
   deploy:
     runs-on: ubuntu-latest
