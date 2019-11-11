@@ -13,8 +13,10 @@ jobs:
     - name: Configure docker
       uses: actions/gcloud/cli@master
       with:
-        args: auth configure-docker
+        args: auth configure-docker --quiet
     - name: Build the Docker image
+      uses: docker://docker:stable
       run: make build
     - name: Push
+      uses: docker://docker:stable
       run: make push
