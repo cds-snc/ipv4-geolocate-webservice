@@ -15,12 +15,12 @@ jobs:
       with:
         args: auth configure-docker --quiet
     - name: Build the Docker image
-      uses: docker://docker:stable
+      uses: actions/gcloud/cli@master
       with:
         entrypoint: sh
         args: -c "docker build -t gcr.io/cdssnc/ipv4-geolocate-webservice:latest -t gcr.io/cdssnc/ipv4-geolocate-webservice:`date '+%Y-%m-%d'` ."
     - name: Push
-      uses: docker://docker:stable
+      uses: actions/gcloud/cli@master
       with:
         entrypoint: sh
         args: -c "docker push gcr.io/cdssnc/ipv4-geolocate-webservice:latest && docker push gcr.io/cdssnc/ipv4-geolocate-webservice:`date '+%Y-%m-%d'`"
