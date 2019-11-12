@@ -6,7 +6,7 @@ The purpose of this webservice is to translate IP v4 (ex. `23.233.63.149`) into 
 
 ## Rational
 
-As part of the security features in our products, we present users with a list of recent location that they have logged in from. To increase the information value for end users, we translate their IP address into a physical location. Ex:
+As part of the security features in our products, we present users with a list of recent locations that they have logged in from. To increase the information value for end users, we translate their IP address into a physical location. Ex:
 
 ```
 Last login on Sunday, November 9th, 2019 20:15 EST from Ottawa, ON, using Firefox 71.
@@ -17,7 +17,7 @@ While many commercial API services exist that will do this for you, we should no
 ## Running it yourself
 
 ```
-docker pull gcr.io/cdssnc/ipv4-geolocate-webservice
+docker pull gcr.io/cdssnc/ipv4-geolocate-webservice:latest
 docker run -p 8080:8080 ipv4-geolocate-webservice
 ```
 
