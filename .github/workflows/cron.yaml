@@ -15,7 +15,18 @@ jobs:
         service_account_key: ${{ secrets.GCLOUD_AUTH }}
     - run: |
         gcloud auth configure-docker
+<<<<<<< HEAD
     - run: |
         sh -c "docker build -t gcr.io/cdssnc/ipv4-geolocate-webservice:latest -t gcr.io/cdssnc/ipv4-geolocate-webservice:`date '+%Y-%m-%d'` --build-arg LICENSE_KEY=${{ secrets.LICENSE_KEY }} ."
     - run: |
         sh -c "docker push gcr.io/cdssnc/ipv4-geolocate-webservice:latest && docker push gcr.io/cdssnc/ipv4-geolocate-webservice:`date '+%Y-%m-%d'`"
+=======
+    - name: Build the Docker image
+      with:
+        entrypoint: sh
+        args: -c "docker build -t gcr.io/cdssnc/ipv4-geolocate-webservice:latest -t gcr.io/cdssnc/ipv4-geolocate-webservice:`date '+%Y-%m-%d'` ."
+    - name: Push
+      with:
+        entrypoint: sh
+        args: -c "docker push gcr.io/cdssnc/ipv4-geolocate-webservice:latest && docker push gcr.io/cdssnc/ipv4-geolocate-webservice:`date '+%Y-%m-%d'`"
+>>>>>>> 3395b95f8e0bb84f2ee78af5ff897149f2390f2a
