@@ -3,8 +3,10 @@ FROM alpine:3.9 as database
 
 RUN apk add --no-cache gzip tar wget && rm -rf /var/cache/apk/*
 
-RUN wget https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz
-RUN tar -xzvf GeoLite2-City.tar.gz
+ARG LICENSE_KEY
+
+RUN wget -O "GeoLite2-City.tar.gz" "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=$LICENSE_KEY&suffix=tar.gz"
+RUN tar -xzvf GeoLite2-City*.tar.gz
  
 # Rust compile container
 FROM rust:1.39 as build
