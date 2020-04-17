@@ -4,6 +4,11 @@
 
 The purpose of this webservice is to translate IP v4 (ex. `23.233.63.149`) into a geographic location. 
 
+## Example 
+
+<img src="https://user-images.githubusercontent.com/62242/79569843-6794cf00-8086-11ea-8609-de72a19ecf58.png" alt="Notify login example" width="500">
+
+
 ## Rational
 
 As part of the security features in our products, we present users with a list of recent locations that they have logged in from. To increase the information value for end users, we translate their IP address into a physical location. Ex:
