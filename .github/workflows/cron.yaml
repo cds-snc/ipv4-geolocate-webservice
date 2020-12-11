@@ -1,5 +1,8 @@
 name: Build and push to AWS ECR on schedule
 on:
+  push:
+    branches:
+      - master
   schedule:
     - cron: "0 12 * * 3"
 
