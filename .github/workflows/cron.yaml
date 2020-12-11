@@ -1,21 +1,36 @@
-name: Build and deploy
+name: Build and push to AWS ECR on schedule
 on:
   schedule:
     - cron: "0 12 * * 3"
+
+env:
+  DOCKER_ORG: public.ecr.aws/v6b8u5o6
+  DOCKER_SLUG: public.ecr.aws/v6b8u5o6/notify-ipv4-geolocate-webservice
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    name: Build and deploy
+    name: Build and push
     steps:
-      - uses: actions/checkout@master
-      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
-        with:
-          version: "270.0.0"
-          service_account_email: ${{ secrets.GCP_SA_EMAIL }}
-          service_account_key: ${{ secrets.GCLOUD_AUTH }}
-      - run: |
-          gcloud auth configure-docker
-      - run: |
-          sh -c "docker build -t gcr.io/cdssnc/ipv4-geolocate-webservice:latest -t gcr.io/cdssnc/ipv4-geolocate-webservice:`date '+%Y-%m-%d'` --build-arg LICENSE_KEY=${{ secrets.LICENSE_KEY }} ."
-      - run: |
-          sh -c "docker push gcr.io/cdssnc/ipv4-geolocate-webservice:latest && docker push gcr.io/cdssnc/ipv4-geolocate-webservice:`date '+%Y-%m-%d'`"
+    - uses: actions/checkout@v2
+    - name: Install AWS CLI
+      run: |
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip -q awscliv2.zip
+        sudo ./aws/install
+        aws --version
+        mkdir -p $HOME/.kube
+    - name: AWS auth with ECR
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ECR_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ECR_SECRET_ACCESS_KEY }}
+      run: |
+        aws ecr-public get-login-password --region us-east-1 > /tmp/aws
+        cat /tmp/aws | docker login --username AWS --password-stdin $DOCKER_ORG
+        rm /tmp/aws
+    - name: Build
+      run: |
+        docker build --build-arg LICENSE_KEY=${{ secrets.LICENSE_KEY }} -t $DOCKER_SLUG:`date '+%Y-%m-%d'` -t $DOCKER_SLUG:latest .
+    - name: Publish
+      run: |
+        docker push $DOCKER_SLUG:latest && docker push $DOCKER_SLUG:`date '+%Y-%m-%d'`
