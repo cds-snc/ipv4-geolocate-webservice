@@ -1,8 +1,7 @@
-name: Build, push to AWS ECR
+name: Build and push to AWS ECR on schedule
 on:
-  push:
-  # schedule:
-  #   - cron: "0 12 * * 3"
+  schedule:
+    - cron: "0 12 * * 3"
 
 env:
   DOCKER_ORG: public.ecr.aws/v6b8u5o6
