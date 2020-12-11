@@ -31,7 +31,7 @@ jobs:
         rm /tmp/aws
     - name: Build
       run: |
-        docker build --build-arg LICENSE_KEY=${{ secrets.LICENSE_KEY }} -t $DOCKER_SLUG:`date '+%Y-%m-%d'` -t $DOCKER_SLUG:latest -f .
+        docker build --build-arg LICENSE_KEY=${{ secrets.LICENSE_KEY }} -t $DOCKER_SLUG:`date '+%Y-%m-%d'` -t $DOCKER_SLUG:latest .
     - name: Publish
       run: |
         docker push $DOCKER_SLUG:latest && docker push $DOCKER_SLUG:`date '+%Y-%m-%d'`
