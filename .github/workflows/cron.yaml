@@ -7,8 +7,8 @@ on:
     - cron: "0 12 * * 3"
 
 env:
-  DOCKER_ORG: public.ecr.aws/v6b8u5o6
-  DOCKER_SLUG: public.ecr.aws/v6b8u5o6/notify-ipv4-geolocate-webservice
+  DOCKER_ORG: public.ecr.aws/cds-snc
+  DOCKER_SLUG: public.ecr.aws/cds-snc/notify-ipv4-geolocate-webservice
 
 jobs:
   deploy:
