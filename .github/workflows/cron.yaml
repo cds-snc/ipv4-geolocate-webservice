@@ -2,13 +2,14 @@ name: Build and push to AWS ECR on schedule
 on:
   push:
     branches:
-      - master
+      - main
   schedule:
     - cron: "0 12 * * 3"
+  workflow_dispatch:
 
 env:
-  DOCKER_ORG: public.ecr.aws/v6b8u5o6
-  DOCKER_SLUG: public.ecr.aws/v6b8u5o6/notify-ipv4-geolocate-webservice
+  DOCKER_ORG: public.ecr.aws/cds-snc
+  DOCKER_SLUG: public.ecr.aws/cds-snc/notify-ipv4-geolocate-webservice
 
 jobs:
   deploy:
@@ -22,15 +23,20 @@ jobs:
         unzip -q awscliv2.zip
         sudo ./aws/install --update
         aws --version
-        mkdir -p $HOME/.kube
-    - name: AWS auth with ECR
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ECR_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_ECR_SECRET_ACCESS_KEY }}
-      run: |
-        aws ecr-public get-login-password --region us-east-1 > /tmp/aws
-        cat /tmp/aws | docker login --username AWS --password-stdin $DOCKER_ORG
-        rm /tmp/aws
+
+    - name: Configure credentials to CDS public ECR using OIDC
+      uses: aws-actions/configure-aws-credentials@010d0da01d0b5a38af31e9c3470dbfdabdecca3a # v4.0.1
+      with:
+        role-to-assume: arn:aws:iam::283582579564:role/notification-api-apply
+        role-session-name: NotifyApiGitHubActions
+        aws-region: "us-east-1"
+  
+    - name: Login to ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@5a88a04c91d5c6f97aae0d9be790e64d9b1d47b7 # v1.7.1
+      with:
+        registry-type: public
+
     - name: Build
       run: |
         docker build --build-arg LICENSE_KEY=${{ secrets.LICENSE_KEY }} -t $DOCKER_SLUG:`date '+%Y-%m-%d'` -t $DOCKER_SLUG:latest .
