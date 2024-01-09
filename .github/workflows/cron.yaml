@@ -5,6 +5,7 @@ on:
       - main
   schedule:
     - cron: "0 12 * * 3"
+  workflow_dispatch:
 
 env:
   DOCKER_ORG: public.ecr.aws/cds-snc
