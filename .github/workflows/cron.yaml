@@ -11,6 +11,10 @@ env:
   DOCKER_ORG: public.ecr.aws/cds-snc
   DOCKER_SLUG: public.ecr.aws/cds-snc/notify-ipv4-geolocate-webservice
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -27,8 +31,8 @@ jobs:
     - name: Configure credentials to CDS public ECR using OIDC
       uses: aws-actions/configure-aws-credentials@010d0da01d0b5a38af31e9c3470dbfdabdecca3a # v4.0.1
       with:
-        role-to-assume: arn:aws:iam::283582579564:role/notification-api-apply
-        role-session-name: NotifyApiGitHubActions
+        role-to-assume: arn:aws:iam::283582579564:role/ipv4-geolocate-webservice-apply
+        role-session-name: Ipv4GeolocateWebserviceGitHubActions
         aws-region: "us-east-1"
   
     - name: Login to ECR
