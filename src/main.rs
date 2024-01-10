@@ -1,8 +1,5 @@
 #![deny(warnings)]
 
-// use std::convert::Infallible;
-// use std::net::SocketAddr;
-
 use std::env;
 
 use std::convert::Infallible;
@@ -57,8 +54,6 @@ async fn location(
 
         return Ok(resp);
     }
-
-    // Ok(Response::new(Full::new(Bytes::from(ip_str))))
 }
 
 fn create_response(body: String, status: StatusCode) -> Response<Full<Bytes>> {
