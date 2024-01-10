@@ -87,7 +87,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
             if
                 let Err(err) = http1::Builder
                     ::new()
-                    // .serve_connection(io, service_fn(hello)).await
                     .serve_connection(io, service_fn(location)).await
             {
                 println!("Error serving connection: {:?}", err);
