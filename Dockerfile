@@ -1,5 +1,5 @@
 # Database download container
-FROM alpine:3.9 as database
+FROM alpine:3.19@sha256:51b67269f354137895d43f3b3d810bfacd3945438e94dc5ac55fdac340352f48 as database
 
 RUN apk add --no-cache gzip tar wget && rm -rf /var/cache/apk/*
 
@@ -9,7 +9,7 @@ RUN wget -O "GeoLite2-City.tar.gz" "https://download.maxmind.com/app/geoip_downl
 RUN tar -xzvf GeoLite2-City*.tar.gz
  
 # Rust compile container
-FROM rust:1.75 as build
+FROM rust:1.75@sha256:ea9465364458a5948adb50e2a0636021e5e40a5e5135e720481522e7f456346e as build
 
 RUN rustup target add x86_64-unknown-linux-musl
 
