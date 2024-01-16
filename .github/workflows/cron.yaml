@@ -68,7 +68,8 @@ jobs:
 
     - name: Install DEV Kubernetes configuration
       run: |
-        aws eks --region $AWS_REGION update-kubeconfig --name notification-canada-ca-dev-eks-cluster --kubeconfig $HOME/.kube/config
+        aws eks --region $AWS_REGION update-kubeconfig --name notification-canada-ca-dev-eks-cluster --alias dev --kubeconfig $HOME/.kube/config
+        kubectl config use-context dev
 
     - name: Restart ipv4 deployment in dev environment
       run: |
@@ -83,8 +84,8 @@ jobs:
 
     - name: Install staging Kubernetes configuration
       run: |
-        rm -f $HOME/.kube/config
-        aws eks --region $AWS_REGION update-kubeconfig --name notification-canada-ca-staging-eks-cluster --kubeconfig $HOME/.kube/config
+        aws eks --region $AWS_REGION update-kubeconfig --name notification-canada-ca-staging-eks-cluster --alias staging --kubeconfig $HOME/.kube/config
+        kubectl config use-context staging
 
     - name: Restart ipv4 deployment in staging environment
       run: |
@@ -99,8 +100,8 @@ jobs:
 
     - name: Install production Kubernetes configuration
       run: |
-        rm -f $HOME/.kube/config
-        aws eks --region $AWS_REGION update-kubeconfig --name notification-canada-ca-production-eks-cluster --kubeconfig $HOME/.kube/config
+        aws eks --region $AWS_REGION update-kubeconfig --name notification-canada-ca-production-eks-cluster --alias prod --kubeconfig $HOME/.kube/config
+        kubectl config use-context prod
 
     - name: Restart ipv4 deployment in production environment
       run: |
