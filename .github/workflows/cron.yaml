@@ -66,6 +66,11 @@ jobs:
         role-session-name: Ipv4GeolocateWebserviceGitHubActions
         aws-region: "ca-central-1"
 
+    - name: Install DEV Kubernetes configuration
+      run: |
+        aws eks --region $AWS_REGION update-kubeconfig --name notification-canada-ca-dev-eks-cluster --alias dev --kubeconfig $HOME/.kube/config
+        kubectl config use-context dev
+
     - name: Restart ipv4 deployment in dev environment
       run: |
         kubectl rollout restart deployment/ipv4 -n notification-canada-ca
@@ -77,6 +82,11 @@ jobs:
         role-session-name: Ipv4GeolocateWebserviceGitHubActions
         aws-region: "ca-central-1"
 
+    - name: Install staging Kubernetes configuration
+      run: |
+        aws eks --region $AWS_REGION update-kubeconfig --name notification-canada-ca-staging-eks-cluster --alias staging --kubeconfig $HOME/.kube/config
+        kubectl config use-context staging
+
     - name: Restart ipv4 deployment in staging environment
       run: |
         kubectl rollout restart deployment/ipv4 -n notification-canada-ca
@@ -87,6 +97,11 @@ jobs:
         role-to-assume: arn:aws:iam::296255494825:role/ipv4-geolocate-webservice-apply
         role-session-name: Ipv4GeolocateWebserviceGitHubActions
         aws-region: "ca-central-1"
+
+    - name: Install production Kubernetes configuration
+      run: |
+        aws eks --region $AWS_REGION update-kubeconfig --name notification-canada-ca-production-eks-cluster --alias prod --kubeconfig $HOME/.kube/config
+        kubectl config use-context prod
 
     - name: Restart ipv4 deployment in production environment
       run: |
