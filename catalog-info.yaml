@@ -1,0 +1,16 @@
+# Metadata for the backstage catalog accessible at this link:
+# https://backstage.cdssandbox.xyz/
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ipv4-geolocate-webservice
+  title: IPv4 Geolocate Webservice
+  description: Webservice translating IP v4 addresses into a geographic location
+  annotations:
+    github.com/project-slug: cds-snc/ipv4-geolocate-webservice
+spec:
+  type: service
+  owner: group:cds-snc/notify-dev
+  system: gc-notification
+  lifecycle: production
