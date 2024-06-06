@@ -63,7 +63,7 @@ jobs:
 
     - name: Restart ipv4 deployment in staging environment
       run: |
-        ./scripts/callManifestsRollout.sh ${GITHUB_SHA::7} $RELEASE_TAG
+        ./scripts/callManifestsRollout.sh $RELEASE_TAG
     
     # TODO: To be fixed, broken at the moment.
     # - name: Restart ipv4 deployment in production environment
