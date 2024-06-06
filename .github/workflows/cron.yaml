@@ -51,58 +51,16 @@ jobs:
       run: |
         docker push $DOCKER_SLUG:latest && docker push $DOCKER_SLUG:`date '+%Y-%m-%d'`
 
-    - name: Install kubectl
-      run: |
-        curl -LO https://storage.googleapis.com/kubernetes-release/release/v$KUBECTL_VERSION/bin/linux/amd64/kubectl
-        chmod +x ./kubectl
-        sudo mv ./kubectl /usr/local/bin/kubectl
-        kubectl version --client
-        mkdir -p $HOME/.kube
-
-    - name: Configure credentials to Notify dev EKS using OIDC
-      uses: aws-actions/configure-aws-credentials@master
-      with:
-        role-to-assume: arn:aws:iam::800095993820:role/ipv4-geolocate-webservice-apply
-        role-session-name: Ipv4GeolocateWebserviceGitHubActions
-        aws-region: "ca-central-1"
-
-    - name: Install DEV Kubernetes configuration
-      run: |
-        aws eks --region $AWS_REGION update-kubeconfig --name notification-canada-ca-dev-eks-cluster --alias dev --kubeconfig $HOME/.kube/config
-        kubectl config use-context dev
-
-    - name: Restart ipv4 deployment in dev environment
-      run: |
-        kubectl rollout restart deployment/ipv4 -n notification-canada-ca
-
-    - name: Configure credentials to Notify staging EKS using OIDC
-      uses: aws-actions/configure-aws-credentials@master
-      with:
-        role-to-assume: arn:aws:iam::239043911459:role/ipv4-geolocate-webservice-apply
-        role-session-name: Ipv4GeolocateWebserviceGitHubActions
-        aws-region: "ca-central-1"
-
-    - name: Install staging Kubernetes configuration
-      run: |
-        aws eks --region $AWS_REGION update-kubeconfig --name notification-canada-ca-staging-eks-cluster --alias staging --kubeconfig $HOME/.kube/config
-        kubectl config use-context staging
+    # DEV won't be supported for the time being until we have a working CI/CD in that env.
+    # - name: Restart ipv4 deployment in dev environment
+    #   run: |
+    #     ./scripts/callManifestsRollout.sh ${GITHUB_SHA::7}
 
     - name: Restart ipv4 deployment in staging environment
       run: |
-        kubectl rollout restart deployment/ipv4 -n notification-canada-ca
-
-    - name: Configure credentials to Notify production EKS using OIDC
-      uses: aws-actions/configure-aws-credentials@master
-      with:
-        role-to-assume: arn:aws:iam::296255494825:role/ipv4-geolocate-webservice-apply
-        role-session-name: Ipv4GeolocateWebserviceGitHubActions
-        aws-region: "ca-central-1"
-
-    - name: Install production Kubernetes configuration
-      run: |
-        aws eks --region $AWS_REGION update-kubeconfig --name notification-canada-ca-production-eks-cluster --alias prod --kubeconfig $HOME/.kube/config
-        kubectl config use-context prod
-
-    - name: Restart ipv4 deployment in production environment
-      run: |
-        kubectl rollout restart deployment/ipv4 -n notification-canada-ca
+        ./scripts/callManifestsRollout.sh ${GITHUB_SHA::7}
+    
+    # TODO: To be fixed, broken at the moment.
+    # - name: Restart ipv4 deployment in production environment
+    #   run: |
+    #     ./scripts/callManifestsRollout.sh ${GITHUB_SHA::7}
