@@ -11,6 +11,7 @@ env:
   DOCKER_ORG: public.ecr.aws/cds-snc
   DOCKER_SLUG: public.ecr.aws/cds-snc/notify-ipv4-geolocate-webservice
   KUBECTL_VERSION: '1.25.4'
+  WORKFLOW_PAT: ${{ secrets.WORKFLOW_GITHUB_PAT }}
 
 permissions:
   id-token: write
