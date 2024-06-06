@@ -11,7 +11,6 @@ env:
   DOCKER_ORG: public.ecr.aws/cds-snc
   DOCKER_SLUG: public.ecr.aws/cds-snc/notify-ipv4-geolocate-webservice
   KUBECTL_VERSION: '1.25.4'
-  RELEASE_TAG: `date '+%Y-%m-%d'`
   WORKFLOW_PAT: ${{ secrets.WORKFLOW_GITHUB_PAT }}
 
 permissions:
@@ -25,6 +24,10 @@ jobs:
     name: Build and push
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+    - name: Set RELEASE_TAG environment variable
+      run: echo "RELEASE_TAG=$(date '+%Y-%m-%d')" >> $GITHUB_ENV
+
     - name: Install AWS CLI
       run: |
         curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
