@@ -57,11 +57,11 @@ jobs:
       run: |
         docker push $DOCKER_SLUG:latest && docker push $DOCKER_SLUG:`date '+%Y-%m-%d'`
 
-    - name: Configure credentials to Notify account using OIDC
-      uses: aws-actions/configure-aws-credentials@5fd3084fc36e372ff1fff382a39b10d03659f355 # v2.2.0
+    - name: Configure credentials to Notify staging EKS using OIDC
+      uses: aws-actions/configure-aws-credentials@master
       with:
-        role-to-assume: arn:aws:iam::239043911459:role/notification-document-download-api-apply
-        role-session-name: NotifyDocumentDownloadApiGitHubActions
+        role-to-assume: arn:aws:iam::239043911459:role/ipv4-geolocate-webservice-apply
+        role-session-name: Ipv4GeolocateWebserviceGitHubActions
         aws-region: "ca-central-1"
 
     - name: Install OpenVPN
