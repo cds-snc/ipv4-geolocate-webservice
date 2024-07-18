@@ -1,4 +1,4 @@
-name: Build and push to AWS ECR on schedule
+name: Build and push to AWS ECR Staging on schedule
 on:
   push:
     branches:
@@ -92,10 +92,3 @@ jobs:
     - name: Update image in staging
       run: |
         kubectl set image deployment.apps/ipv4 ipv4=$DOCKER_SLUG:$RELEASE_TAG -n=notification-canada-ca --kubeconfig=$HOME/.kube/config
-
-
-
-    # TODO: To be fixed, broken at the moment.
-    # - name: Restart ipv4 deployment in production environment
-    #   run: |
-    #     ./scripts/callManifestsRollout.sh ${GITHUB_SHA::7}
