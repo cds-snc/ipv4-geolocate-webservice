@@ -7,7 +7,7 @@ ARG LICENSE_KEY
 
 RUN wget -O "GeoLite2-City.tar.gz" "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key=$LICENSE_KEY&suffix=tar.gz"
 RUN tar -xzvf GeoLite2-City*.tar.gz
- 
+
 # Rust compile container
 FROM rust:1.79@sha256:9b2689d6f99ff381f178fa4361db745c8c355faecde73aa5b18b0efa84f03e62 as build
 

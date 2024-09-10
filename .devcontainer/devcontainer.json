@@ -15,6 +15,7 @@
 			"extensions": [
 				"bungcip.better-toml",
 				"eamodio.gitlens",
+				"fill-labs.dependi",
 				"GitHub.copilot",
 				"kaiwood.center-editor-window",
 				"ms-azuretools.vscode-docker",
