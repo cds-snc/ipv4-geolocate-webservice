@@ -9,7 +9,7 @@ RUN wget -O "GeoLite2-City.tar.gz" "https://download.maxmind.com/app/geoip_downl
 RUN tar -xzvf GeoLite2-City*.tar.gz
 
 # Rust compile container
-FROM rust:1.81@sha256:fcd390e0a3a6bfcf26969861efbe7b864df052aa71a361cf3cd7c5c585b1b413 as build
+FROM rust:1.81@sha256:7b7f7ae5e49819e708369d49925360bde2af4f1962842e75a14af17342f08262 as build
 
 RUN rustup target add x86_64-unknown-linux-musl
 
