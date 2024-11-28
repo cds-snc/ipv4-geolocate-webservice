@@ -11,7 +11,6 @@ env:
   DOCKER_ORG: public.ecr.aws/cds-snc
   DOCKER_SLUG: public.ecr.aws/cds-snc/notify-ipv4-geolocate-webservice
   KUBECTL_VERSION: '1.25.4'
-  WORKFLOW_PAT: ${{ secrets.WORKFLOW_GITHUB_PAT }}
   OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.PRODUCTION_OP_SERVICE_ACCOUNT_TOKEN }}
 
 permissions:
@@ -51,7 +50,7 @@ jobs:
 
     - name: Build
       run: |
-        docker build --build-arg LICENSE_KEY=${{ secrets.LICENSE_KEY }} -t $DOCKER_SLUG:$RELEASE_TAG -t $DOCKER_SLUG:latest .
+        docker build --build-arg LICENSE_KEY=${{ secrets.MAXMIND_LICENSE_KEY }} -t $DOCKER_SLUG:$RELEASE_TAG -t $DOCKER_SLUG:latest .
 
     - name: Publish
       run: |
@@ -74,17 +73,23 @@ jobs:
         curl -o 1pass.deb https://downloads.1password.com/linux/debian/amd64/stable/1password-cli-amd64-latest.deb
         sudo dpkg -i 1pass.deb
 
-    - name: One Password Fetch
+    - name: Setup Terraform tools
+      uses: cds-snc/terraform-tools-setup@v1
+      env: # In case you want to override default versions
+        CONFTEST_VERSION: 0.30.0 
+        TERRAFORM_VERSION: 1.9.5
+        TERRAGRUNT_VERSION: 0.66.9
+        TF_SUMMARIZE_VERSION: 0.2.3                           
+
+    - name: Fetch VPN
       run: |
-        op read op://ppnxsriom3alsxj4ogikyjxlzi/"Production Github Actions VPN"/notesPlain > /var/tmp/production.ovpn
-        
+        curl https://raw.githubusercontent.com/cds-snc/notification-manifests/refs/heads/main/scripts/createVPNConfig.sh | bash -s production
 
     - name: Connect to VPN
       uses: "kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5"
       with:
         config_file: /var/tmp/production.ovpn
-        client_key: ${{ secrets.PRODUCTION_OVPN_CLIENT_KEY }}
-        echo_config: false       
+        echo_config: false 
         
     - name: Get Kubernetes configuration
       run: |
