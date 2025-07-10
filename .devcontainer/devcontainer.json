@@ -3,7 +3,7 @@
 {
 	"name": "Rust",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/rust:1-1-bullseye@sha256:f1d44e262c849c4812c0134bcdfe77a9b737d89f1af15aaf5aa2acbe7a749a80",
+	"image": "mcr.microsoft.com/devcontainers/rust:1-1-bullseye@sha256:6817e2f836956c5034933e52f305b6c1112b628d3fbad0e87f472a2839ad5fe0",
 	"features": {
 		"ghcr.io/devcontainers/features/rust:1": {
 			"version": "latest",
