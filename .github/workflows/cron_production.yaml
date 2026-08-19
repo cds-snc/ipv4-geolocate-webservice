@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and push
     steps:
-    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.1
+    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
     - name: Set RELEASE_TAG environment variable
       run: echo "RELEASE_TAG=$(date '+%Y-%m-%d')" >> $GITHUB_ENV
@@ -36,7 +36,7 @@ jobs:
         aws --version
 
     - name: Configure credentials to CDS public ECR using OIDC
-      uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502  # v4.0.1
+      uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 # v4.0.2
       with:
         role-to-assume: arn:aws:iam::283582579564:role/ipv4-geolocate-webservice-apply
         role-session-name: Ipv4GeolocateWebserviceGitHubActions
@@ -57,7 +57,7 @@ jobs:
         docker push $DOCKER_SLUG:latest && docker push $DOCKER_SLUG:`date '+%Y-%m-%d'`
 
     - name: Configure credentials to Notify production EKS using OIDC
-      uses: aws-actions/configure-aws-credentials@master
+      uses: aws-actions/configure-aws-credentials@ffc08eae7350b1061d7de219e2135c75561fb680 # main as of 2026-08-19
       with:
         role-to-assume: arn:aws:iam::296255494825:role/ipv4-geolocate-webservice-apply
         role-session-name: Ipv4GeolocateWebserviceGitHubActions
@@ -74,7 +74,7 @@ jobs:
         sudo dpkg -i 1pass.deb
 
     - name: Setup Terraform tools
-      uses: cds-snc/terraform-tools-setup@v1
+      uses: cds-snc/terraform-tools-setup@cc15ce9039f6c37c592fb9930b70466b229d2e9b # v1
       env: # In case you want to override default versions
         CONFTEST_VERSION: 0.30.0 
         TERRAFORM_VERSION: 1.9.5
@@ -86,7 +86,7 @@ jobs:
         curl https://raw.githubusercontent.com/cds-snc/notification-manifests/refs/heads/main/scripts/createVPNConfig.sh | bash -s production
 
     - name: Connect to VPN
-      uses: "kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5"
+      uses: "kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5" # v3.1.0
       with:
         config_file: /var/tmp/production.ovpn
         echo_config: false 
