@@ -34,6 +34,22 @@ docker pull "public.ecr.aws/cds-snc/notify-ipv4-geolocate-webservice:$IMAGE_TAG"
 docker run -p 8080:8080 "public.ecr.aws/cds-snc/notify-ipv4-geolocate-webservice:$IMAGE_TAG"
 ```
 
+## Deployment
+
+Like notification-api, the publisher builds and pushes an image, then sends an
+`update-docker-image` dispatch to notification-manifests with `component: IPV4`
+and the exact published tag. Manifests updates `IPV4_DOCKER_TAG` in dev/staging
+configuration, and its existing Helm workflows deploy that configured image.
+There are no direct Kubernetes updates or separate production image rebuilds.
+
+After a successful staging Helm deployment, manifests opens a `[MANIFEST]` PR
+to promote the same complete tag to production. Merging that PR uses the existing
+production release and Helm deployment process.
+
+Merge the manifests integration before this publisher change. Configure the
+`MANIFESTS_WORKFLOW_TOKEN` repository secret with permission to dispatch to
+notification-manifests, as used by the other Notify image publishers.
+
 ## Usage
 To geocode an IP address call the API in the following way: `https://ipv4-geolocate-webservice-dn42lmpbua-uc.a.run.app/23.233.63.149`
 An example response is shown below.
