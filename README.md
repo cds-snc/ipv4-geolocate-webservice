@@ -21,9 +21,17 @@ While many commercial API services exist that will do this for you, we should no
 
 ## Running it yourself
 
-```
-docker pull gcr.io/cdssnc/ipv4-geolocate-webservice:latest
-docker run -p 8080:8080 ipv4-geolocate-webservice
+Builds publish only tags with the format `<7-character-sha>-<UTC-date-time>-<run-id>-<attempt>`.
+The timestamp distinguishes weekly MaxMind database refreshes of the same source
+commit; the run ID and attempt distinguish concurrent builds and reruns. Neither
+`latest` nor date-only tags are published.
+
+Choose a published tag from the successful workflow run:
+
+```sh
+IMAGE_TAG=<published-tag>
+docker pull "public.ecr.aws/cds-snc/notify-ipv4-geolocate-webservice:$IMAGE_TAG"
+docker run -p 8080:8080 "public.ecr.aws/cds-snc/notify-ipv4-geolocate-webservice:$IMAGE_TAG"
 ```
 
 ## Usage
