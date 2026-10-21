@@ -1,4 +1,4 @@
-name: Build and push to AWS ECR Staging on schedule
+name: Build, publish, and update manifests on schedule
 on:
   push:
     branches:
@@ -10,8 +10,6 @@ on:
 env:
   DOCKER_ORG: public.ecr.aws/cds-snc
   DOCKER_SLUG: public.ecr.aws/cds-snc/notify-ipv4-geolocate-webservice
-  KUBECTL_VERSION: '1.25.4'
-  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.STAGING_OP_SERVICE_ACCOUNT_TOKEN }}
 
 permissions:
   id-token: write
@@ -56,45 +54,14 @@ jobs:
       run: |
         docker push "$DOCKER_SLUG:$RELEASE_TAG"
 
-    - name: Configure credentials to Notify staging EKS using OIDC
-      uses: aws-actions/configure-aws-credentials@ffc08eae7350b1061d7de219e2135c75561fb680 # main as of 2026-08-19
-      with:
-        role-to-assume: arn:aws:iam::239043911459:role/ipv4-geolocate-webservice-apply
-        role-session-name: Ipv4GeolocateWebserviceGitHubActions
-        aws-region: "ca-central-1"
-
-    - name: Install OpenVPN
+    - name: Update images in staging (Helm)
+      env:
+        MANIFESTS_WORKFLOW_TOKEN: ${{ secrets.MANIFESTS_WORKFLOW_TOKEN }}
       run: |
-        sudo apt update
-        sudo apt install -y openvpn openvpn-systemd-resolved
-
-    - name: Install 1Pass CLI
-      run: |
-        curl -o 1pass.deb https://downloads.1password.com/linux/debian/amd64/stable/1password-cli-amd64-latest.deb
-        sudo dpkg -i 1pass.deb
-
-    - name: Setup Terraform tools
-      uses: cds-snc/terraform-tools-setup@cc15ce9039f6c37c592fb9930b70466b229d2e9b # v1
-      env: # In case you want to override default versions
-        CONFTEST_VERSION: 0.30.0 
-        TERRAFORM_VERSION: 1.9.5
-        TERRAGRUNT_VERSION: 0.66.9
-        TF_SUMMARIZE_VERSION: 0.2.3                           
-
-    - name: Fetch VPN
-      run: |
-        curl https://raw.githubusercontent.com/cds-snc/notification-manifests/refs/heads/main/scripts/createVPNConfig.sh | bash -s staging
-
-    - name: Connect to VPN
-      uses: "kota65535/github-openvpn-connect-action@cd2ed8a90cc7b060dc4e001143e811b5f7ea0af5" # v3.1.0
-      with:
-        config_file: /var/tmp/staging.ovpn
-        echo_config: false     
-        
-    - name: Get Kubernetes configuration
-      run: |
-        aws eks --region $AWS_REGION update-kubeconfig --name notification-canada-ca-staging-eks-cluster --kubeconfig $HOME/.kube/config
-
-    - name: Update image in staging
-      run: |
-        kubectl set image deployment.apps/ipv4 ipv4=$DOCKER_SLUG:$RELEASE_TAG -n=notification-canada-ca --kubeconfig=$HOME/.kube/config
+        curl --fail-with-body -sS -L \
+          -X POST \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer $MANIFESTS_WORKFLOW_TOKEN" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          https://api.github.com/repos/cds-snc/notification-manifests/dispatches \
+          -d "$(jq -n --arg tag "$RELEASE_TAG" '{event_type: "update-docker-image", client_payload: {component: "IPV4", docker_tag: $tag}}')"
