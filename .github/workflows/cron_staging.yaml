@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - main
-  schedule:
-    - cron: "0 5 * * *"
   workflow_dispatch:
 
 env:
@@ -25,17 +23,15 @@ jobs:
     name: Build and push
     outputs:
       image_tag: ${{ steps.image-tag.outputs.tag }}
-      source_sha: ${{ steps.image-tag.outputs.source_sha }}
     steps:
     - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
-    - name: Set immutable image tag
+    - name: Set image tag
       id: image-tag
       env:
         GITHUB_SHA: ${{ github.sha }}
       run: |
-        echo "tag=${GITHUB_SHA::7}-$(date -u '+%Y%m%dT%H%M%SZ')-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_OUTPUT"
-        echo "source_sha=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+        echo "tag=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
     - name: Install AWS CLI
       run: |
@@ -114,11 +110,7 @@ jobs:
         private_key: ${{ secrets.NOTIFY_PR_BOT_PRIVATE_KEY }}
         scope: cds-snc
 
-    - name: Create isolated IPv4 production release PR
+    - name: Create production release PR
       uses: cds-snc/notification-pr-bot@main # zizmor: ignore[unpinned-uses] First-party bot intentionally tracks main.
       env:
         TOKEN: ${{ steps.notify-pr-bot.outputs.token }}
-        TITLE_PREFIX: "[IPV4][AUTO-PR]"
-        PROJECTS_LAMBDAS: "[]"
-        PROJECTS: >-
-          [{"repoName":"ipv4-geolocate-webservice","helmfileOverride":"helmfile/overrides/production.env","helmfileTagKey":"IPV4_DOCKER_TAG","ecrUrl":"public.ecr.aws/cds-snc","ecrName":"notify-ipv4-geolocate-webservice","sourceSha":"${{ needs.build-and-push.outputs.source_sha }}","imageTag":"${{ needs.build-and-push.outputs.image_tag }}"}]

@@ -4,6 +4,7 @@ on:
   workflow_run:
     workflows:
       - "Build and publish IPv4 image"
+      - "Nightly rebuild trigger"
     types:
       - completed
     branches:

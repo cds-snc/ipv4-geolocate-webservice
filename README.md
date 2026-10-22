@@ -21,10 +21,8 @@ While many commercial API services exist that will do this for you, we should no
 
 ## Running it yourself
 
-Builds publish only tags with the format `<7-character-sha>-<UTC-date-time>-<run-id>-<attempt>`.
-The timestamp distinguishes nightly database refreshes and code builds from the
-same source commit; the run ID and attempt distinguish concurrent builds and reruns. Neither
-`latest` nor date-only tags are published.
+Builds publish only the 7-character commit SHA tag. Neither `latest` nor
+date tags are published.
 
 Choose a published tag from the successful workflow run:
 
@@ -36,22 +34,19 @@ docker run -p 8080:8080 "public.ecr.aws/cds-snc/notify-ipv4-geolocate-webservice
 
 ## Deployment
 
-The publisher runs for pushes to `main` and nightly at 05:00 UTC. It pushes an
-immutable SHA/date/run tag, dispatches that exact tag to notification-manifests
-for dev/staging, and invokes the Notify PR Bot with the same tag for an isolated
-IPv4 production release PR. This uses the standard `[AUTO-PR]` production
-review, VERSION bump, and Helmfile apply flow; no direct Kubernetes updates or
-separate production image rebuilds are used.
+Deployment follows the same flow as API and Admin. Every push to `main` builds
+and pushes a `<sha7>` image, dispatches that tag to notification-manifests for
+dev/staging, and runs the Notify PR Bot, which opens the normal `[AUTO-PR]`
+production release PR.
 
-The publisher failure watcher, manifest image-tag updater, and staging
-deployment workflow notify Slack on failure. Ensure `MANIFESTS_WORKFLOW_TOKEN`,
-`SLACK_WEBHOOK`, `NOTIFY_PR_BOT_APP_ID`, and `NOTIFY_PR_BOT_PRIVATE_KEY` are
-available to this repository; the manifest token needs permission to dispatch
-to notification-manifests.
+To pick up MaxMind database updates, `Nightly rebuild trigger` runs at 05:00
+UTC and commits a timestamp to `.github/nightly-rebuild` on `main` (temporarily
+lifting branch protection, as notification-manifests does). That new commit
+triggers the normal build, so every nightly image has its own sha7.
 
-Merge the PR bot tag-support change and the manifests integration before this
-publisher change so the production tag and staging configuration are supported
-before the nightly workflow starts.
+Both workflows notify Slack on failure. Required secrets: `MAXMIND_LICENSE_KEY`,
+`MANIFESTS_WORKFLOW_TOKEN`, `SLACK_WEBHOOK`, `PR_BOT_GITHUB_TOKEN`,
+`NOTIFY_PR_BOT_APP_ID`, and `NOTIFY_PR_BOT_PRIVATE_KEY`.
 
 ## Usage
 To geocode an IP address call the API in the following way: `https://ipv4-geolocate-webservice-dn42lmpbua-uc.a.run.app/23.233.63.149`
