@@ -23,7 +23,7 @@ jobs:
     - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
     - name: Install AWS CLI
       run: |
-        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        curl --fail -sSL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
         unzip -q awscliv2.zip
         sudo ./aws/install --update
         aws --version
@@ -61,7 +61,7 @@ jobs:
 
     - name: Update images in staging
       run: |
-        curl -L \
+        curl --fail-with-body -sS -L \
           -X POST \
           -H "Accept: application/vnd.github+json" \
           -H "Authorization: Bearer ${{ secrets.MANIFESTS_WORKFLOW_TOKEN }}" \
@@ -95,7 +95,7 @@ jobs:
       if: ${{ failure() }}
       run: |
         json='{"text":"<!here> CI is failing in <https://github.com/cds-snc/ipv4-geolocate-webservice/actions/runs/'${{ github.run_id }}'|ipv4-geolocate-webservice> !"}'
-        curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
+        curl --fail-with-body -sS -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
 
   # The commit below is a normal push to main, which runs the deploy job above
   # so each nightly image gets its own sha7 tag.
@@ -187,4 +187,4 @@ jobs:
       if: ${{ failure() }}
       run: |
         json='{"text":"<!here> Nightly rebuild is failing in <https://github.com/cds-snc/ipv4-geolocate-webservice/actions/runs/'${{ github.run_id }}'|ipv4-geolocate-webservice> !"}'
-        curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
+        curl --fail-with-body -sS -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
