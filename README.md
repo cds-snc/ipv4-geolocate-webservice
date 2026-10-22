@@ -17,14 +17,30 @@ As part of the security features in our products, we present users with a list o
 Last login on Sunday, November 9th, 2019 20:15 EST from Ottawa, ON, using Firefox 71.
 ```
 
-While many commercial API services exist that will do this for you, we should not be sharing our user's IP addresses with them. The data used in this service is updated weekly.
+While many commercial API services exist that will do this for you, we should not be sharing our user's IP addresses with them. The data used in this service is refreshed nightly from MaxMind's GeoLite2 database.
 
 ## Running it yourself
 
+Builds publish only the 7-character commit SHA tag. Neither `latest` nor
+date tags are published.
+
+Choose a published tag from the successful workflow run:
+
+```sh
+IMAGE_TAG=<published-tag>
+docker pull "public.ecr.aws/cds-snc/notify-ipv4-geolocate-webservice:$IMAGE_TAG"
+docker run -p 8080:8080 "public.ecr.aws/cds-snc/notify-ipv4-geolocate-webservice:$IMAGE_TAG"
 ```
-docker pull gcr.io/cdssnc/ipv4-geolocate-webservice:latest
-docker run -p 8080:8080 ipv4-geolocate-webservice
-```
+
+## Deployment
+
+`docker.yaml` works like notification-api and notification-admin: every push to
+`main` builds and pushes a `<sha7>` image, updates the dev/staging tag in
+notification-manifests, and runs the Notify PR Bot for the production release PR.
+
+To refresh the MaxMind GeoLite2 database, the same workflow runs nightly at
+05:00 UTC and commits a timestamp to `.github/nightly-rebuild`. That push to
+`main` triggers a normal build with a new sha7. Failures notify Slack.
 
 ## Usage
 To geocode an IP address call the API in the following way: `https://ipv4-geolocate-webservice-dn42lmpbua-uc.a.run.app/23.233.63.149`
