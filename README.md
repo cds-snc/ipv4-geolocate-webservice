@@ -34,19 +34,13 @@ docker run -p 8080:8080 "public.ecr.aws/cds-snc/notify-ipv4-geolocate-webservice
 
 ## Deployment
 
-Deployment follows the same flow as API and Admin. Every push to `main` builds
-and pushes a `<sha7>` image, dispatches that tag to notification-manifests for
-dev/staging, and runs the Notify PR Bot, which opens the normal `[AUTO-PR]`
-production release PR.
+`docker.yaml` works like notification-api and notification-admin: every push to
+`main` builds and pushes a `<sha7>` image, updates the dev/staging tag in
+notification-manifests, and runs the Notify PR Bot for the production release PR.
 
-To pick up MaxMind database updates, `Nightly rebuild trigger` runs at 05:00
-UTC and commits a timestamp to `.github/nightly-rebuild` on `main` (temporarily
-lifting branch protection, as notification-manifests does). That new commit
-triggers the normal build, so every nightly image has its own sha7.
-
-Both workflows notify Slack on failure. Required secrets: `MAXMIND_LICENSE_KEY`,
-`MANIFESTS_WORKFLOW_TOKEN`, `SLACK_WEBHOOK`, `PR_BOT_GITHUB_TOKEN`,
-`NOTIFY_PR_BOT_APP_ID`, and `NOTIFY_PR_BOT_PRIVATE_KEY`.
+To refresh the MaxMind GeoLite2 database, the same workflow runs nightly at
+05:00 UTC and commits a timestamp to `.github/nightly-rebuild`. That push to
+`main` triggers a normal build with a new sha7. Failures notify Slack.
 
 ## Usage
 To geocode an IP address call the API in the following way: `https://ipv4-geolocate-webservice-dn42lmpbua-uc.a.run.app/23.233.63.149`
