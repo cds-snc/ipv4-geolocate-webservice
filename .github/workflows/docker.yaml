@@ -81,6 +81,20 @@ jobs:
       env:
         TOKEN: ${{ steps.notify-pr-bot.outputs.token }}
 
+    # Disabled: the scratch image contains only the Rust binary and GeoLite2 data.
+    # Trivy detects no dependency manifests, and the shared action fails on
+    # `.manifests[]` being null. This does not mean the Rust dependencies are safe;
+    # scan Cargo.lock separately and revisit this step when the action supports empty results.
+    # - name: Generate docker SBOM
+    #   uses: cds-snc/security-tools/.github/actions/generate-sbom@12a0cdea1c5a515dfcbe353693db804a1793c0ed # v4.0.1
+    #   env:
+    #     TRIVY_DB_REPOSITORY: ${{ vars.TRIVY_DB_REPOSITORY }}
+    #   with:
+    #     docker_image: "${{ env.DOCKER_SLUG }}:${{ steps.image-tag.outputs.tag }}"
+    #     dockerfile_path: "Dockerfile"
+    #     sbom_name: "notification-ipv4-geolocate-webservice"
+    #     token: "${{ secrets.GITHUB_TOKEN }}"
+
     - name: Notify Slack channel if this job failed
       if: ${{ failure() }}
       run: |
