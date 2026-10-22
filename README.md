@@ -17,12 +17,12 @@ As part of the security features in our products, we present users with a list o
 Last login on Sunday, November 9th, 2019 20:15 EST from Ottawa, ON, using Firefox 71.
 ```
 
-While many commercial API services exist that will do this for you, we should not be sharing our user's IP addresses with them. The data used in this service is updated weekly.
+While many commercial API services exist that will do this for you, we should not be sharing our user's IP addresses with them. The data used in this service is refreshed twice weekly to follow MaxMind's GeoLite2 update schedule.
 
 ## Running it yourself
 
 Builds publish only tags with the format `<7-character-sha>-<UTC-date-time>-<run-id>-<attempt>`.
-The timestamp distinguishes weekly MaxMind database refreshes of the same source
+The timestamp distinguishes twice-weekly MaxMind database refreshes of the same source
 commit; the run ID and attempt distinguish concurrent builds and reruns. Neither
 `latest` nor date-only tags are published.
 

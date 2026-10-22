@@ -4,7 +4,8 @@ on:
     branches:
       - main
   schedule:
-    - cron: "0 12 * * 3"
+    # Run after MaxMind's Tuesday and Friday GeoLite2 database updates.
+    - cron: "0 12 * * 3,6"
   workflow_dispatch:
 
 env:
@@ -14,6 +15,10 @@ env:
 permissions:
   id-token: write
   contents: read
+
+concurrency:
+  group: ipv4-image-publish
+  cancel-in-progress: false
 
 jobs:
   deploy:
