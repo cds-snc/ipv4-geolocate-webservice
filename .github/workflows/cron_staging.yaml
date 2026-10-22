@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and push
     steps:
-    - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
     - name: Set RELEASE_TAG environment variable
       run: echo "RELEASE_TAG=$(date '+%Y-%m-%d')" >> $GITHUB_ENV
@@ -36,7 +36,7 @@ jobs:
         aws --version
 
     - name: Configure credentials to CDS public ECR using OIDC
-      uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 # v4.0.2
+      uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4.3.1
       with:
         role-to-assume: arn:aws:iam::283582579564:role/ipv4-geolocate-webservice-apply
         role-session-name: Ipv4GeolocateWebserviceGitHubActions
@@ -44,7 +44,7 @@ jobs:
   
     - name: Login to ECR
       id: login-ecr
-      uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 # v2.0.1
+      uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd # v2.1.7
       with:
         registry-type: public
 
@@ -74,7 +74,7 @@ jobs:
         sudo dpkg -i 1pass.deb
 
     - name: Setup Terraform tools
-      uses: cds-snc/terraform-tools-setup@cc15ce9039f6c37c592fb9930b70466b229d2e9b # v1
+      uses: cds-snc/terraform-tools-setup@36df0d7572a15921998170395475093c183d720a # v1.3.0
       env: # In case you want to override default versions
         CONFTEST_VERSION: 0.30.0 
         TERRAFORM_VERSION: 1.9.5
