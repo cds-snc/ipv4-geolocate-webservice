@@ -17,13 +17,13 @@ As part of the security features in our products, we present users with a list o
 Last login on Sunday, November 9th, 2019 20:15 EST from Ottawa, ON, using Firefox 71.
 ```
 
-While many commercial API services exist that will do this for you, we should not be sharing our user's IP addresses with them. The data used in this service is refreshed twice weekly to follow MaxMind's GeoLite2 update schedule.
+While many commercial API services exist that will do this for you, we should not be sharing our user's IP addresses with them. The data used in this service is refreshed nightly from MaxMind's GeoLite2 database.
 
 ## Running it yourself
 
 Builds publish only tags with the format `<7-character-sha>-<UTC-date-time>-<run-id>-<attempt>`.
-The timestamp distinguishes twice-weekly MaxMind database refreshes of the same source
-commit; the run ID and attempt distinguish concurrent builds and reruns. Neither
+The timestamp distinguishes nightly database refreshes and code builds from the
+same source commit; the run ID and attempt distinguish concurrent builds and reruns. Neither
 `latest` nor date-only tags are published.
 
 Choose a published tag from the successful workflow run:
@@ -36,19 +36,22 @@ docker run -p 8080:8080 "public.ecr.aws/cds-snc/notify-ipv4-geolocate-webservice
 
 ## Deployment
 
-Like notification-api, the publisher builds and pushes an image, then sends an
-`update-docker-image` dispatch to notification-manifests with `component: IPV4`
-and the exact published tag. Manifests updates `IPV4_DOCKER_TAG` in dev/staging
-configuration, and its existing Helm workflows deploy that configured image.
-There are no direct Kubernetes updates or separate production image rebuilds.
+The publisher runs for pushes to `main` and nightly at 05:00 UTC. It pushes an
+immutable SHA/date/run tag, dispatches that exact tag to notification-manifests
+for dev/staging, and invokes the Notify PR Bot with the same tag for an isolated
+IPv4 production release PR. This uses the standard `[AUTO-PR]` production
+review, VERSION bump, and Helmfile apply flow; no direct Kubernetes updates or
+separate production image rebuilds are used.
 
-After a successful staging Helm deployment, manifests opens a `[MANIFEST]` PR
-to promote the same complete tag to production. Merging that PR uses the existing
-production release and Helm deployment process.
+The publisher failure watcher, manifest image-tag updater, and staging
+deployment workflow notify Slack on failure. Ensure `MANIFESTS_WORKFLOW_TOKEN`,
+`SLACK_WEBHOOK`, `NOTIFY_PR_BOT_APP_ID`, and `NOTIFY_PR_BOT_PRIVATE_KEY` are
+available to this repository; the manifest token needs permission to dispatch
+to notification-manifests.
 
-Merge the manifests integration before this publisher change. Configure the
-`MANIFESTS_WORKFLOW_TOKEN` repository secret with permission to dispatch to
-notification-manifests, as used by the other Notify image publishers.
+Merge the PR bot tag-support change and the manifests integration before this
+publisher change so the production tag and staging configuration are supported
+before the nightly workflow starts.
 
 ## Usage
 To geocode an IP address call the API in the following way: `https://ipv4-geolocate-webservice-dn42lmpbua-uc.a.run.app/23.233.63.149`
