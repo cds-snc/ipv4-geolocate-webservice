@@ -3,15 +3,13 @@
 {
 	"name": "Rust",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/rust:1-1-bookworm@sha256:fc57fb865035c5395e85246c8842b071ced6e7cde727b3c98abbcc794eaf4759",
+	"image": "mcr.microsoft.com/devcontainers/rust:1-bookworm@sha256:4d944fc913385b14c0507bc4636749a773543067c2f5fc885b6fd4a42e59f006",
 	"features": {
 		"ghcr.io/devcontainers/features/rust:1": {
 			"version": "latest",
 			"profile": "minimal"
 		}
 	},
-	// Distrust emSign ECC Root CA - G3 and Comodo AAA Services root
-	"postCreateCommand": "sudo apt-get update && sudo apt-get install -y --no-install-recommends ca-certificates libbrotli1 && dpkg --compare-versions \"$(dpkg-query -W -f='${Version}' libbrotli1)\" ge 1.0.9-2+deb12u1 && sudo sed -i -e 's|^mozilla/emSign_ECC_Root_CA_-_G3.crt|!&|' -e 's|^mozilla/Comodo_AAA_Services_root.crt|!&|' /etc/ca-certificates.conf && sudo update-ca-certificates --fresh",
 	"customizations": {
 		"vscode": {
 			"extensions": [
