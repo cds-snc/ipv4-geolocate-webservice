@@ -20,7 +20,11 @@ RUN tar -xzvf GeoLite2-City*.tar.gz
 FROM rust:1.81@sha256:fcd390e0a3a6bfcf26969861efbe7b864df052aa71a361cf3cd7c5c585b1b413 as build
 
 # -- Update CA certificates to disable emSign ECC Root CA - G3 and Comodo AAA Services root --
-RUN sed -i \
+RUN apt-get update && \
+  apt-get install -y --no-install-recommends ca-certificates libbrotli1 && \
+  dpkg --compare-versions "$(dpkg-query -W -f='${Version}' libbrotli1)" ge 1.0.9-2+deb12u1 && \
+  rm -rf /var/lib/apt/lists/* && \
+  sed -i \
       -e 's|^mozilla/emSign_ECC_Root_CA_-_G3.crt|!&|' \
       -e 's|^mozilla/Comodo_AAA_Services_root.crt|!&|' \
       /etc/ca-certificates.conf && \

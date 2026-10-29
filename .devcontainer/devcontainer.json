@@ -3,15 +3,15 @@
 {
 	"name": "Rust",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/rust:1-1-bookworm@sha256:fc57fb865035c5395e85246c8842b071ced6e7cde727b3c98abbcc794eaf4759",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
 	"features": {
 		"ghcr.io/devcontainers/features/rust:1": {
 			"version": "latest",
 			"profile": "minimal"
 		}
 	},
-	// Distrust emSign ECC Root CA - G3 and Comodo AAA Services root
-	"postCreateCommand": "sudo sed -i -e 's|^mozilla/emSign_ECC_Root_CA_-_G3.crt|!&|' -e 's|^mozilla/Comodo_AAA_Services_root.crt|!&|' /etc/ca-certificates.conf && sudo update-ca-certificates --fresh",
 	"customizations": {
 		"vscode": {
 			"extensions": [
