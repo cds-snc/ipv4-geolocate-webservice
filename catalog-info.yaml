@@ -6,7 +6,7 @@ kind: Component
 metadata:
   name: notification-ipv4-geolocate-webservice
   title: Notification IPv4 Geolocate Webservice
-  description: Webservice translating IP v4 addresses into a geographic location
+  description: Webservice translating IPv4 addresses into a geographic location.
   annotations:
     github.com/project-slug: cds-snc/notification-ipv4-geolocate-webservice
     backstage.io/source-location: url:https://github.com/cds-snc/notification-ipv4-geolocate-webservice/tree/main/
@@ -14,6 +14,6 @@ metadata:
     license: MIT
 spec:
   type: service
+  lifecycle: production
   owner: group:cds-snc/notify-dev
   system: gc-notification
-  lifecycle: production
