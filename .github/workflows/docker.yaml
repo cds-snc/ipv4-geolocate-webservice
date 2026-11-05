@@ -103,7 +103,7 @@ jobs:
     - name: Notify Slack channel if this job failed
       if: ${{ failure() }}
       run: |
-        json='{"text":"<!here> CI is failing in <https://github.com/cds-snc/ipv4-geolocate-webservice/actions/runs/'${{ github.run_id }}'|ipv4-geolocate-webservice> !"}'
+        json='{"text":"<!here> CI is failing in <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|${{ github.repository }}> !"}'
         curl --fail-with-body -sS -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
 
   # The commit below is a normal push to main, which runs the deploy job above
@@ -197,5 +197,5 @@ jobs:
     - name: Notify Slack channel if this job failed
       if: ${{ failure() }}
       run: |
-        json='{"text":"<!here> Nightly rebuild is failing in <https://github.com/cds-snc/ipv4-geolocate-webservice/actions/runs/'${{ github.run_id }}'|ipv4-geolocate-webservice> !"}'
+        json='{"text":"<!here> Nightly rebuild is failing in <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|${{ github.repository }}> !"}'
         curl --fail-with-body -sS -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_WEBHOOK }}
