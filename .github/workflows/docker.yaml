@@ -36,7 +36,7 @@ jobs:
     - name: Configure credentials to CDS public ECR using OIDC
       uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 # v4.0.2
       with:
-        role-to-assume: arn:aws:iam::283582579564:role/notification-geolocate-webservice-apply
+        role-to-assume: arn:aws:iam::283582579564:role/ipv4-geolocate-webservice-apply
         role-session-name: Ipv4GeolocateWebserviceGitHubActions
         aws-region: "us-east-1"
 
@@ -97,7 +97,7 @@ jobs:
     #   with:
     #     docker_image: "${{ env.DOCKER_SLUG }}:${{ steps.image-tag.outputs.tag }}"
     #     dockerfile_path: "Dockerfile"
-    #     sbom_name: "notification-geolocate-webservice"
+    #     sbom_name: "notification-ipv4-geolocate-webservice"
     #     token: "${{ secrets.GITHUB_TOKEN }}"
 
     - name: Notify Slack channel if this job failed
