@@ -1,4 +1,4 @@
-# Notification IPv4 Geolocate Webservice
+# IPv4 Geolocate Webservice
 
 ## Purpose
 

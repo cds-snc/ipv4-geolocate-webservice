@@ -5,14 +5,12 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: ipv4-geolocate-webservice
-  title: Notification IPv4 Geolocate Webservice
-  description: Webservice translating IPv4 addresses into a geographic location.
+  title: IPv4 Geolocate Webservice
+  description: Webservice translating IP v4 addresses into a geographic location
   annotations:
     github.com/project-slug: cds-snc/notification-ipv4-geolocate-webservice
-  labels:
-    license: MIT
 spec:
   type: service
-  lifecycle: production
   owner: group:cds-snc/notify-dev
   system: gc-notification
+  lifecycle: production
