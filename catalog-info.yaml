@@ -8,7 +8,7 @@ metadata:
   title: IPv4 Geolocate Webservice
   description: Webservice translating IP v4 addresses into a geographic location
   annotations:
-    github.com/project-slug: cds-snc/notification-geolocate-webservice
+    github.com/project-slug: cds-snc/notification-geolocate-api
 spec:
   type: service
   owner: group:cds-snc/notify-dev
